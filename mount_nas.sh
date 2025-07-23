@@ -14,7 +14,7 @@ log() {
 
 # === CREATE MOUNT POINT ===
 log "Creating mount point at $MOUNT_POINT"
-mkdir "$MOUNT_POINT" || {
+mkdir -p "$MOUNT_POINT" || {
     log "Failed to create mount point."
     exit 1
 }
