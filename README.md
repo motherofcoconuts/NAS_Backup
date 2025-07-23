@@ -21,6 +21,8 @@
 ```bash
 ./backup_to_nas.sh status
 ```
+
+**Note**: The status command now shows `Unsynced Files` count when greater than 0, helping administrators identify incomplete backups.
 ### Logs
 
 ```bash
@@ -32,7 +34,13 @@ Register tool as CLI tool
 ```bash
 sudo ln -s ~/Development/Scripts/backup_to_nas.sh /usr/local/bin/backup_to_nas
 ```
-``
+
+## Documentation
+
+- **[API Reference](docs/API_REFERENCE.md)**: Complete API documentation for the status server
+- **[User Guide](docs/USER_GUIDE.md)**: Comprehensive user guide with examples and best practices
+- **[Changelog](CHANGELOG.md)**: Release notes and version history
+
 ## Launch Agent
 Wrote a launch agent  `mountNAS` to mount the NAS and `backuptoNAS` which checks if the NAS volume is mounted and if so runs rsync.
 
