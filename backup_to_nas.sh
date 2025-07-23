@@ -102,13 +102,22 @@ show_last_run() {
 
 # === Get last synced file from rsync output ===
 get_last_synced_file() {
-    # Look for the last file that was actually transferred (not just listed)
-    # Find lines that show file transfers in rsync output
-    last_transferred_file=$(grep -E '^[^/]+\.(jpg|jpeg|png|gif|mov|mp4|avi|mkv|pdf|doc|docx|txt|md|sh|py|js|html|css|json|xml|zip|tar|gz|dmg|pkg|app|heic|cr2|raw|tiff|psd)$' "$LOGFILE" | tail -1 2>/dev/null)
+    # Look for the last file that was actually transferred in rsync output
+    # Rsync shows files being transferred as simple paths like "2024/082024 - Alaska/P8310074.MOV"
+    last_transferred_file=$(grep -iE '^[0-9]{4}/.*\.(jpg|jpeg|png|gif|mov|mp4|avi|mkv|pdf|doc|docx|txt|md|sh|py|js|html|css|json|xml|zip|tar|gz|dmg|pkg|app|heic|cr2|raw|tiff|psd)$' "$LOGFILE" | grep -v "^rsync:" | grep -v "rename" | tail -1 2>/dev/null)
+    
+    # If no files found with year prefix, try a broader search
+    if [[ -z "$last_transferred_file" ]]; then
+        last_transferred_file=$(grep -E '\.(jpg|jpeg|png|gif|mov|mp4|avi|mkv|pdf|doc|docx|txt|md|sh|py|js|html|css|json|xml|zip|tar|gz|dmg|pkg|app|heic|cr2|raw|tiff|psd)$' "$LOGFILE" | grep -v "^rsync:" | grep -v "rename" | grep -v "building file list" | grep -v "total size" | tail -1 2>/dev/null)
+        
+        # Clean up any leading/trailing whitespace
+        if [[ -n "$last_transferred_file" ]]; then
+            last_transferred_file=$(echo "$last_transferred_file" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+        fi
+    fi
     
     if [[ -z "$last_transferred_file" ]]; then
-        # Fallback: look for any file-like pattern in recent log entries
-        last_transferred_file=$(tail -100 "$LOGFILE" | grep -E '\.(jpg|jpeg|png|gif|mov|mp4|avi|mkv|pdf|doc|docx|txt|md|sh|py|js|html|css|json|xml|zip|tar|gz|dmg|pkg|app|heic|cr2|raw|tiff|psd)$' | tail -1 2>/dev/null)
+        last_transferred_file="None found"
     fi
     
     echo "$last_transferred_file"
