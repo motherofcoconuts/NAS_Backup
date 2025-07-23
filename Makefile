@@ -16,8 +16,9 @@ help:
 	@echo "  make help    - Show this help message"
 
 setup:
-	# Create symlink
-	ln -sf $(SCRIPT_PATH)/backup_to_nas.sh $(BIN_PATH)
+	# Create symlink (requires sudo)
+	@echo "Creating symlink (requires sudo)..."
+	sudo ln -sf $(SCRIPT_PATH)/backup_to_nas.sh $(BIN_PATH)
 	# Copy plist files to LaunchAgents
 	cp $(SCRIPT_PATH)/com.ryanhoulihan.mountNAS.plist $(LAUNCH_AGENT_PATH)/
 	cp $(SCRIPT_PATH)/com.ryanhoulihan.backuptoNAS.plist $(LAUNCH_AGENT_PATH)/
